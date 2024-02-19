@@ -19,8 +19,8 @@ post '/upload' do
   target = "./uploads/#{name}"
   File.open(target, 'wb') { |f| f.write(tmpfile.read) }
 
-  # Execute C# code
-  `mono csharp_code/YourCSharpCode.exe #{target}`
+  # Execute Ruby code
+  HexFileProcessor::Program.datafetcher(target)
 
   redirect '/result'
 end
