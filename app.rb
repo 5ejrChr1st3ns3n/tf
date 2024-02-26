@@ -1,6 +1,7 @@
 require 'sinatra'
 require 'sqlite3'
 require 'slim'
+require_relative 'datafetcher.rb'
 
 # Connect to SQLite database
 DB = SQLite3::Database.new 'db/maps.db'
@@ -20,7 +21,7 @@ post '/upload' do
   File.open(target, 'wb') { |f| f.write(tmpfile.read) }
 
   # Execute Ruby code
-  HexFileProcessor::Program.datafetcher(target)
+  HexFileProcessor::Program.main(target) # Pass the file path to the main method
 
   redirect '/result'
 end

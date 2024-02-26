@@ -41,14 +41,42 @@ module HexFileProcessor
 
                 fetched_info << "LevelAuthorName: #{metadata['levelAuthorName']}," if metadata && metadata['levelAuthorName']
 
-                # Assuming hex_code contains the hex code you want to insert
-                db.execute("INSERT INTO hex_data (hex_code) VALUES (?)", [hex_code])
-                # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-                # ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ LOOOK AT IIIIIT
+                if fetched_info.any?
+                  fetched_data = "#{hex_number.chomp}: Uploaded: #{created_at}, #{fetched_info.join(' ')}"
+
+                  if File.exist?(fetched_info_file_path)
+                    existing_lines = File.readlines(fetched_info_file_path)
+
+                    index = existing_lines.index { |line| line.start_with?("#{hex_number.chomp}:") }
+
+                    if index
+                      existing_lines[index] = fetched_data
+                    else
+                      existing_lines << fetched_data
+                    end
+
+                    File.open(fetched_info_file_path, 'w') { |file| file.puts(existing_lines.sort) }
+                  else
+                    File.write(fetched_info_file_path, fetched_data + "\n")
+                  end
+                else
+                  puts "No valid difficulty information found for hex number: #{hex_number.chomp}"
+                end
+              else
+                puts "No diffs found for hex number: #{hex_number.chomp}"
               end
+            else
+              puts "No versions found for hex number: #{hex_number.chomp}"
             end
+          else
+            puts "Request failed: #{response.message}"
           end
         end
+
+        puts "Fetched information saved successfully."
+        puts "Process completed."
+      rescue StandardError => e
+        puts "Error: #{e.message}"
       end
     end
   end
