@@ -1,0 +1,14 @@
+doctype html
+html
+  head
+    title Processed Data
+  body
+    h1 Processed Data
+    ul
+      - @.each do |data|
+        li
+          strong File Name:
+          = data[1]
+        li
+          strong File Content:
+          = data[2]

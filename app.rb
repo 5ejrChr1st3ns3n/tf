@@ -13,21 +13,21 @@ end
 
 # Route to handle the file upload submission
 post '/upload' do
-  unless params[:file] && (tmpfile = params[:file][:tempfile]) && (name = params[:file][:filename])
-    return "No file selected"
-  end
+  #unless params[:file] && (tmpfile = params[:file][:tempfile]) && (name = params[:file][:filename])
+    #return "No file selected"
+  #end
 
-  target = "./uploads/#{name}"
-  File.open(target, 'wb') { |f| f.write(tmpfile.read) }
+  #target = "./uploads/#{name}"
+  #File.open(target, 'wb') { |f| f.write(tmpfile.read) }
 
   # Execute Ruby code
-  HexFileProcessor::Program.main(target) # Pass the file path to the main method
+  #HexFileProcessor::Program.main(target) # Pass the file path to the main method
 
   redirect '/result'
 end
 
 # Route to display the processed data
 get '/result' do
-  @processed_data = DB.execute("SELECT * FROM processed_data")
+  #@processed_data = DB.execute("SELECT * FROM processed_data")
   slim :result
 end

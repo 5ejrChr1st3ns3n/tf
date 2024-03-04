@@ -1,14 +1,9 @@
 doctype html
 html
   head
-    title Processed Data
+    title Text File Contents
   body
-    h1 Processed Data
+    h1 Text File Contents
     ul
-      - @.each do |data|
-        li
-          strong File Name:
-          = data[1]
-        li
-          strong File Content:
-          = data[2]
+      - File.readlines('fetched_info.txt').each do |line|
+        p = line.chomp
