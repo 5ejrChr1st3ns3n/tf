@@ -28,6 +28,6 @@ end
 
 # Route to display the processed data
 get '/result' do
-  #@processed_data = DB.execute("SELECT * FROM processed_data")
+  @processed_data = DB.execute("SELECT * FROM maps")
   slim :result
 end
