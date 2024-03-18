@@ -29,6 +29,10 @@ post("/users/new") do
   end
 end
 
+get("/showlogin") do
+  slim :login
+end
+
 post("/login") do
   username = params[:username]
   password = params[:password]
