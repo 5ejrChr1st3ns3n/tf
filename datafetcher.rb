@@ -8,6 +8,7 @@
        api_url = "http://api.monni.moe/map?k="
 
        db = SQLite3::Database.new 'db/maps.db'
+       db.execute("DELETE FROM maps")
 
        puts "Processing file: #{file_path}"
 
@@ -28,7 +29,6 @@
              metadata = response_data['metadata']
              level_author_name = metadata['levelAuthorName']
 
-             db.execute("DELETE * FROM maps")
              db.execute("INSERT INTO maps (key, age, mapper) VALUES (?, ?, ?)", key.chomp, created_at, level_author_name)
            end
          end
