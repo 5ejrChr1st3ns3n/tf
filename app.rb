@@ -1,12 +1,19 @@
 require 'sinatra'
+require 'sinatra/reloader'
 require 'sqlite3'
 require 'slim'
 require 'bcrypt'
+enable :sessions
 
 DB = SQLite3::Database.new 'db/maps.db'
 
-get '/' do
+get('/home') do
+  #id = session[:id].to_i
+  #results = db.execute("SELECT * FROM maps WHERE id = ?",id) -------- Session management --------
+  @processed_data = DB.execute("SELECT * FROM maps")
 
+
+  slim :home
 end
 
 get("/register") do
@@ -22,7 +29,7 @@ post("/users/new") do
     password_digest = BCrypt::Password.create(password)
     db = SQLite3::Database.new("db/users.db")
     db.execute("INSERT INTO users (username, pwdigest) VALUES (?, ?)",username, password_digest)
-    redirect("/")
+    redirect("/home")
     
   else
     "Lösenorden matchar inte"
@@ -40,22 +47,16 @@ post("/login") do
   db = SQLite3::Database.new("db/users.db")
   db.results_as_hash = true
   
-  result = db.execute("SELECT * FROM users WHERE userame = ?, username").first
+  result = db.execute("SELECT * FROM users WHERE username = ?",username).first
   pwdigest = result["pwdigest"]
   id = result["id"]
   
   if BCrypt::Password.new(pwdigest) == password
+    session[:id] = id
     redirect("/home")
     
   else
     "Incorrect Password"
-  end
-
-  # Route to handle the file upload form
-  get '/home' do
-    @processed_data = DB.execute("SELECT * FROM maps")
-
-    slim :index
   end
   
   # Route to handle the file upload submission
@@ -69,6 +70,7 @@ post("/login") do
     #File.write(target, tmpfile.read)
   
     require_relative 'datafetcher.rb'
+    File.delete("uploads/hex_numbers.txt")
     
     redirect '/home'
   end

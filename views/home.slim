@@ -7,3 +7,9 @@ html
     form action="/upload" method="post" enctype="multipart/form-data"
       input type="file" name="file"
       input type="submit" value="Upload"
+
+    table
+      - @processed_data.each do |row|
+        tr
+          - row.each do |column|
+            td = column

@@ -1,0 +1,16 @@
+doctype html
+html lang="en"
+  head
+    title Beatsaber Map Manager
+  body
+    header
+      nav
+        ul
+          li 
+            a href="/showlogin" Login
+          
+          - unless request.path_info == "/register" 
+            li
+                a href="/register" Register
+
+    == yield
