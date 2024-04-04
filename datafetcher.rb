@@ -7,8 +7,7 @@
      def self.fetch_hex_number_information(file_path)
        api_url = "http://api.monni.moe/map?k="
 
-       db = SQLite3::Database.new 'db/maps.db'
-       db.execute("DELETE FROM maps")
+       db = SQLite3::Database.new 'db/data.db'
 
        puts "Processing file: #{file_path}"
 

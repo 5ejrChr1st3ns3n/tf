@@ -5,7 +5,7 @@ require 'slim'
 require 'bcrypt'
 enable :sessions
 
-DB = SQLite3::Database.new 'db/maps.db'
+DB = SQLite3::Database.new 'db/data.db'
 
 get('/home') do
   #id = session[:id].to_i
@@ -15,7 +15,29 @@ get('/home') do
 
   slim :home
 end
+#
+#
+#
 
+#
+
+#
+#
+
+#
+#
+# FIX THE DATABASE TO HAVE PROPER ID's AND MAKE SURE THE UNIQUE CONSTRAINTS ARE HANDLED PROPERLY
+
+#
+
+#
+#
+
+#
+#
+#
+
+##
 get("/register") do
   slim :register
 end
@@ -27,7 +49,7 @@ post("/users/new") do
   
   if (password == password_confirm)
     password_digest = BCrypt::Password.create(password)
-    db = SQLite3::Database.new("db/users.db")
+    db = SQLite3::Database.new("db/data.db")
     db.execute("INSERT INTO users (username, pwdigest) VALUES (?, ?)",username, password_digest)
     redirect("/home")
     
@@ -44,7 +66,7 @@ post("/login") do
   username = params[:username]
   password = params[:password]
   
-  db = SQLite3::Database.new("db/users.db")
+  db = SQLite3::Database.new("db/data.db")
   db.results_as_hash = true
   
   result = db.execute("SELECT * FROM users WHERE username = ?",username).first
@@ -58,20 +80,18 @@ post("/login") do
   else
     "Incorrect Password"
   end
-  
-  # Route to handle the file upload submission
-  post '/upload' do
-    unless params[:file] && (tmpfile = params[:file][:tempfile]) && (name = params[:file][:filename])
-      return "No file selected"
-    end
-  
-    target = "./uploads/#{name}"
-    File.open(target, 'wb') { |f| f.write(tmpfile.read) }
-    #File.write(target, tmpfile.read)
-  
-    require_relative 'datafetcher.rb'
-    File.delete("uploads/hex_numbers.txt")
-    
-    redirect '/home'
+end
+
+post '/upload' do
+  unless params[:file] && (tmpfile = params[:file][:tempfile]) && (name = params[:file][:filename])
+    return "No file selected"
   end
+
+  target = "./uploads/#{name}"
+  File.write(target, tmpfile.read)
+
+  require_relative 'datafetcher.rb'
+  File.delete("uploads/hex_numbers.txt")
+  
+  redirect '/home'
 end
