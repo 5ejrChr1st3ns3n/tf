@@ -3,15 +3,14 @@ require 'sinatra/reloader'
 require 'sqlite3'
 require 'slim'
 require 'bcrypt'
+require_relative 'datafetcher.rb'
 enable :sessions
 
 DB = SQLite3::Database.new 'db/data.db'
 
 get('/home') do
-  #id = session[:id].to_i
-  #results = db.execute("SELECT * FROM maps WHERE id = ?",id) -------- Session management --------
-  @processed_data = DB.execute("SELECT * FROM maps")
-
+  id = session[:id].to_i
+  @processed_data = DB.execute("SELECT mapid FROM relation WHERE userid = ?",id)
 
   slim :home
 end
@@ -68,8 +67,11 @@ post '/upload' do
   target = "./uploads/#{name}"
   File.write(target, tmpfile.read)
 
-  require_relative 'datafetcher.rb'
+  id = session[:id].to_i
+  processor = HexFileProcessor::Program.new
+  processor.fetch_hex_number_information("./uploads/hex_numbers.txt", id)
+
   File.delete("uploads/hex_numbers.txt")
-  
+
   redirect '/home'
 end
