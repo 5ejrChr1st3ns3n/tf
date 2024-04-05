@@ -15,29 +15,7 @@ get('/home') do
 
   slim :home
 end
-#
-#
-#
 
-#
-
-#
-#
-
-#
-#
-# FIX THE DATABASE TO HAVE PROPER ID's AND MAKE SURE THE UNIQUE CONSTRAINTS ARE HANDLED PROPERLY
-
-#
-
-#
-#
-
-#
-#
-#
-
-##
 get("/register") do
   slim :register
 end
