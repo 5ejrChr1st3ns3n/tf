@@ -17,15 +17,14 @@ get('/home') do
   mapper_filter = params[:mapperFilterInput]
   age_filter = params[:ageFilterInput]
 
-  puts mapper_filter
-  puts age_filter
-
   if !age_filter.nil?
     parsed_date = DateTime.parse(age_filter)
-    unix_age_filter = parsed_date.to_time.to_i
+    unix_age_filter = parsed_date.to_time.to_i * 10
   else
   end
 
+  puts mapper_filter
+  puts age_filter
   puts unix_age_filter
 
   user_map_list.each do |map_key|

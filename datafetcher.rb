@@ -33,7 +33,7 @@
             metadata = response_data['metadata']
             level_author_name = metadata['levelAuthorName']
 
-            db.execute("INSERT or IGNORE INTO maps (key, age, mapper) VALUES (?, ?, ?)", key, created_at, level_author_name)
+            db.execute("INSERT or IGNORE INTO maps (key, age, mapper) VALUES (?, ?, ?)", key, created_at / 100, level_author_name)
           end
         end
       end
