@@ -3,6 +3,7 @@ require 'sinatra/reloader'
 require 'sqlite3'
 require 'slim'
 require 'bcrypt'
+require 'time'
 require_relative 'datafetcher.rb'
 enable :sessions
 
@@ -10,7 +11,28 @@ DB = SQLite3::Database.new 'db/data.db'
 
 get('/home') do
   id = session[:id].to_i
-  @processed_data = DB.execute("SELECT mapid FROM relation WHERE userid = ?",id)
+  user_map_list = DB.execute("SELECT mapid FROM relation WHERE userid = ?",id)
+
+  user_map_info = []
+  mapper_filter = params[:mapperFilterInput]
+  age_filter = params[:ageFilterInput]
+
+  puts mapper_filter
+  puts age_filter
+
+  if !age_filter.nil?
+    parsed_date = DateTime.parse(age_filter)
+    unix_age_filter = parsed_date.to_time.to_i
+  else
+  end
+
+  puts unix_age_filter
+
+  user_map_list.each do |map_key|
+    user_map_info << DB.execute("SELECT * FROM maps WHERE key = ? AND mapper != ? AND age > ?", map_key, mapper_filter, unix_age_filter)
+  end
+  
+  @processed_data = user_map_info
 
   slim :home
 end
@@ -68,6 +90,7 @@ post '/upload' do
   File.write(target, tmpfile.read)
 
   id = session[:id].to_i
+  DB.execute("DELETE FROM relation WHERE userid = ?", id)
   processor = HexFileProcessor::Program.new
   processor.fetch_hex_number_information("./uploads/hex_numbers.txt", id)
 

@@ -8,6 +8,21 @@ html
       input type="file" name="file"
       input type="submit" value="Upload"
 
+    <br>
+
+    <form id="Filter" action="/home" method="get">
+      <fieldset>
+        <legend>Filter Options</legend>
+        <label for="ageFilter">Remove maps older than: </label>
+        <input type="date" id="ageFilterInput" name="ageFilterInput">
+        <br>
+        <label for="mapperFilter">Banned Mappers: </label>
+        <input type="text" id="mapperFilterInput" name="mapperFilterInput">
+        <br>
+        <button type="submit" id="submitButton">Submit</button>
+      </fieldset>
+    </form>
+
     table
       - @processed_data.each do |row|
         tr
