@@ -17,6 +17,10 @@ get('/home') do
   mapper_filter = params[:mapperFilterInput]
   age_filter = params[:ageFilterInput]
 
+  if !mapper_filter.nil?
+    DB.execute("INSERT INTO relation (userid, mappername) VALUES (?, ?)",id, mapper_filter)
+  end
+
   if !age_filter.nil?
     parsed_date = DateTime.parse(age_filter)
     unix_age_filter = parsed_date.to_time.to_i * 10
