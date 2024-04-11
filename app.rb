@@ -14,16 +14,17 @@ get('/home') do
   user_map_list = DB.execute("SELECT mapid FROM relation WHERE userid = ?",id)
   
   user_map_info = []
+  unix_age_filter = 0
   mapper_filter = params[:mapperFilterInput]
   age_filter = params[:ageFilterInput]
   unban_mapper = params[:unbanMapperInput]
 
   if mapper_filter || age_filter || unban_mapper
-    if !age_filter == ""
-      parsed_date = DateTime.parse(age_filter)
-      unix_age_filter = parsed_date.to_time.to_i * 10
+    if !age_filter.nil? && !age_filter.empty?
+      parsed_date = DateTime.parse(age_filter&.to_s)
+      unix_age_filter = parsed_date&.to_time&.to_i * 10
     end
-
+    
     DB.execute("INSERT INTO relation (userid, mappername, agecap) VALUES (?, ?, ?)",id, mapper_filter, unix_age_filter)
 
     if !unban_mapper == ""
