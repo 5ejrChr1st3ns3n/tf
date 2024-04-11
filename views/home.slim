@@ -3,7 +3,7 @@ html
   head
     title File Upload
   body
-    h1 Upload Keys
+    h1 Welcome #{@user}, Please upload your keys here!
     form action="/upload" method="post" enctype="multipart/form-data"
       input type="file" name="file"
       input type="submit" value="Upload"
@@ -19,12 +19,15 @@ html
         <label for="mapperFilter">Banned Mappers: </label>
         <input type="text" id="mapperFilterInput" name="mapperFilterInput">
         <br>
+        <label for="unbanMapper">Unban Mappers: </label>
+        <input type="text" id="unbanMapperInput" name="unbanMapperInput">
+        <br>
         <button type="submit" id="submitButton">Submit</button>
       </fieldset>
     </form>
 
     table
-      - @processed_data.each do |row|
+      - @map_list.each do |row|
         tr
           - row.each do |column|
             td = column

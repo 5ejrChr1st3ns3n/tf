@@ -12,31 +12,32 @@ DB = SQLite3::Database.new 'db/data.db'
 get('/home') do
   id = session[:id].to_i
   user_map_list = DB.execute("SELECT mapid FROM relation WHERE userid = ?",id)
-
+  
   user_map_info = []
   mapper_filter = params[:mapperFilterInput]
   age_filter = params[:ageFilterInput]
+  unban_mapper = params[:unbanMapperInput]
 
-  if !mapper_filter.nil?
-    DB.execute("INSERT INTO relation (userid, mappername) VALUES (?, ?)",id, mapper_filter)
+  if mapper_filter || age_filter || unban_mapper
+    if !age_filter == ""
+      parsed_date = DateTime.parse(age_filter)
+      unix_age_filter = parsed_date.to_time.to_i * 10
+    end
+
+    DB.execute("INSERT INTO relation (userid, mappername, agecap) VALUES (?, ?, ?)",id, mapper_filter, unix_age_filter)
+
+    if !unban_mapper == ""
+      DB.execute("DELETE FROM relation WHERE userid = ? AND mappername = ?",id, unban_mapper)
+    end
   end
-
-  if !age_filter.nil?
-    parsed_date = DateTime.parse(age_filter)
-    unix_age_filter = parsed_date.to_time.to_i * 10
-  else
-  end
-
-  puts mapper_filter
-  puts age_filter
-  puts unix_age_filter
 
   user_map_list.each do |map_key|
     user_map_info << DB.execute("SELECT * FROM maps WHERE key = ? AND mapper != ? AND age > ?", map_key, mapper_filter, unix_age_filter)
   end
-  
-  @processed_data = user_map_info
 
+  @map_list = user_map_info
+  @banned_mappers = DB.execute("SELECT mappername FROM relation WHERE userid = ?", id)
+  @user = DB.execute("SELECT username FROM users WHERE id = ?", id)
   slim :home
 end
 
