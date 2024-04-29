@@ -1,0 +1,11 @@
+doctype html
+html lang="en"
+  head
+  body
+    table
+      - @userlist.each do |username|
+        tr
+          td = username
+          td
+            button type="button" = "Edit #{username}"
+    

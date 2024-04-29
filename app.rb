@@ -8,6 +8,7 @@ require_relative 'datafetcher.rb'
 require_relative 'posts.rb'
 
 # DO ADMIN AND SAFE USER PROTECTION FOR ADMIN ROUTES SO YOU DONT LOSE OUR FUCKING MIND
+# MAKE IT POSSIBLE TO REMOVE USERS THROUGH ADMIN PAGE AAAAAAAAA
 
 enable :sessions
 PostsApp.run!
@@ -113,6 +114,23 @@ post("/login") do
   else
     "Incorrect Password"
   end
+end
+
+get("/admin") do
+  id = session[:id].to_i
+  user = DB.execute("SELECT admin FROM users WHERE id = ?", id)
+
+  puts "a"
+  puts user
+  puts "a"
+  
+  if user.nil? 
+    redirect '/home'
+  else
+    @userlist = DB.execute("SELECT username FROM users")
+  end
+
+  slim :admin
 end
 
 post '/upload' do

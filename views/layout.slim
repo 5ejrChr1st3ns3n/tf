@@ -7,10 +7,14 @@ html lang="en"
       nav
         ul
           li 
+            a href="/admin" Admin page
+
+          li
             a href="/showlogin" Login
           
           - unless request.path_info == "/register" 
             li
                 a href="/register" Register
+            
 
     == yield
