@@ -5,9 +5,38 @@ require 'slim'
 require 'bcrypt'
 require 'time'
 require_relative 'datafetcher.rb'
+require_relative 'posts.rb'
+
+# DO ADMIN AND SAFE USER PROTECTION FOR ADMIN ROUTES SO YOU DONT LOSE OUR FUCKING MIND
+
 enable :sessions
+PostsApp.run!
 
 DB = SQLite3::Database.new 'db/data.db'
+
+get('/') do
+
+  slim :'posts/index'
+end 
+
+get('/posts/new') do
+
+  slim :'posts/new'
+end
+
+get('/posts/edit') do
+
+  slim :'posts/edit'
+end
+
+post('/posts') do
+  @posts_app = PostsApp.new
+  title = params[:title]
+  content = params[:content]
+  @posts_app.add_post(title, content) # They dont understand common sense and cant understand "add_post" despite finding the file clearly including it
+
+  redirect '/'
+end
 
 get('/home') do
   id = session[:id].to_i
