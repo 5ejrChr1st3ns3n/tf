@@ -7,5 +7,7 @@ html lang="en"
         tr
           td = username
           td
-            button type="button" = "Edit #{username}"
+            form action="/process_data" method="post"
+            input type="hidden" name="instance_data" value=<%= @user %>
+            button type="submit" value="Submit"
     
