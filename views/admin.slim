@@ -7,7 +7,6 @@ html lang="en"
         tr
           td = username
           td
-            form action="/process_data" method="post"
-            input type="hidden" name="instance_data" value=<%= @user %>
-            button type="submit" value="Submit"
-    
+            form action="/delete" method="post" 
+              input type="hidden" name="username" value="#{username}"
+              button type="submit"Delete

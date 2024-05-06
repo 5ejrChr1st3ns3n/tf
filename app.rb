@@ -7,39 +7,22 @@ require 'time'
 require_relative 'datafetcher.rb'
 require_relative 'posts.rb'
 
-# DO ADMIN AND SAFE USER PROTECTION FOR ADMIN ROUTES SO YOU DONT LOSE OUR FUCKING MIND
-# MAKE IT POSSIBLE TO REMOVE USERS THROUGH ADMIN PAGE AAAAAAAAA
-
 enable :sessions
-PostsApp.run!
 
 DB = SQLite3::Database.new 'db/data.db'
 
-get('/') do
-
+get("/") do
   slim :'posts/index'
 end 
 
-get('/posts/new') do
+get("/comment") do
+  title = [:title]
+  content = [:content]
 
-  slim :'posts/new'
+  DB.execute()
 end
 
-get('/posts/edit') do
-
-  slim :'posts/edit'
-end
-
-post('/posts') do
-  @posts_app = PostsApp.new
-  title = params[:title]
-  content = params[:content]
-  @posts_app.add_post(title, content) # They dont understand common sense and cant understand "add_post" despite finding the file clearly including it
-
-  redirect '/'
-end
-
-get('/home') do
+get("/home") do
   id = session[:id].to_i
   user_map_list = DB.execute("SELECT mapid FROM relation WHERE userid = ?",id)
   
@@ -119,12 +102,8 @@ end
 get("/admin") do
   id = session[:id].to_i
   user = DB.execute("SELECT admin FROM users WHERE id = ?", id)
-
-  puts "a"
-  puts user
-  puts "a"
   
-  if user.nil? 
+  if user != [[1]]
     redirect '/home'
   else
     @userlist = DB.execute("SELECT username FROM users")
@@ -133,7 +112,15 @@ get("/admin") do
   slim :admin
 end
 
-post '/upload' do
+post("/delete") do
+  username = params[:username][2..-3]
+
+  DB.execute("DELETE FROM users WHERE username = ?", username)
+
+  redirect "/admin"
+end
+
+post("/upload") do
   unless params[:file] && (tmpfile = params[:file][:tempfile]) && (name = params[:file][:filename])
     return "No file selected"
   end
@@ -148,5 +135,5 @@ post '/upload' do
 
   File.delete("uploads/hex_numbers.txt")
 
-  redirect '/home'
+  redirect "/home"
 end
