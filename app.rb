@@ -10,6 +10,8 @@ enable :sessions
 
 DB = SQLite3::Database.new 'db/data.db'
 
+#FIX RESTFULL AND EDIT FUNCTIONALITY FOR POSTS
+
 get("/") do
   redirect '/home'
 end 
