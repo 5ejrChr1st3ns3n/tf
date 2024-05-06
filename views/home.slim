@@ -31,3 +31,21 @@ html
         tr
           - row.each do |column|
             td = column
+
+      puts "@posts content: #{@posts}"
+
+    - if @posts.empty?
+        p No posts yet. Be the first to create one!
+        a href="/post" Create post
+
+    - else
+        a href="/post" Create post
+        ul
+        - @posts.each do |post|
+            li
+            h3 = post[0]
+            p = post[1]
+            a href="/posts/edit"Edit post
+            form action="/posts/delete" method="post" 
+              input type="hidden" name="post" value="#{post[0]}"
+              button type="submit"Delete

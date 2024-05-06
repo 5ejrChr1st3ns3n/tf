@@ -5,21 +5,48 @@ require 'slim'
 require 'bcrypt'
 require 'time'
 require_relative 'datafetcher.rb'
-require_relative 'posts.rb'
 
 enable :sessions
 
 DB = SQLite3::Database.new 'db/data.db'
 
 get("/") do
-  slim :'posts/index'
+  redirect '/home'
 end 
 
-get("/comment") do
-  title = [:title]
-  content = [:content]
+post("/posts/new") do
+  title = params[:title]
+  content = params[:content]
+  id = session[:id].to_i
 
-  DB.execute()
+  DB.execute("INSERT INTO posts (title, content) VALUES (?, ?)",title, content)
+  DB.execute("INSERT INTO relation (post, userid) VALUES (?, ?)",title, id)
+
+  redirect '/home'
+end
+
+post("/posts/edit") do
+  newtitle = params[:newtitle]
+  newcontent = params[:newcontent]
+  id = session[:id].to_i
+
+  DB.execute("UPDATE posts SET title = newtitle, content = newcontent WHERE ",newtitle, newcontent,title, content)
+  DB.execute("INSERT INTO relation (post, userid) VALUES (?, ?)",title, id)
+
+  redirect '/home'
+end
+
+post("/posts/delete") do
+  post = params[:post]
+
+  DB.execute("DELETE FROM posts WHERE title = ?", post)
+
+  redirect "/home"
+end
+
+get("/post") do
+
+  slim :"/posts/post"
 end
 
 get("/home") do
@@ -52,6 +79,7 @@ get("/home") do
   @map_list = user_map_info
   @banned_mappers = DB.execute("SELECT mappername FROM relation WHERE userid = ?", id)
   @user = DB.execute("SELECT username FROM users WHERE id = ?", id)
+  @posts = DB.execute("SELECT * FROM posts")
   slim :home
 end
 

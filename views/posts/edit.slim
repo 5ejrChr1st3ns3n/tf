@@ -1,12 +1,9 @@
-- post = find_post(params[:id])
-
 h1 Edit Post
-form action="/posts/<%= params[:id] %>" method="post"
-  input type="hidden" name="_method" value="put"
+form action="/posts/new" method="post"
   label for="title" Title:
-  input type="text" name="title" id="title" value="= post[:title]"
+  input type="text" name="title" id="title"
   br
   label for="content" Content:
-  textarea name="content" id="content" = post[:content]
+  textarea name="content" id="content"
   br
-  button type="submit" Update Post
+  button type="submit" Submit edit
