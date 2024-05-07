@@ -17,9 +17,9 @@ get("/") do
 end 
 
 post("/posts/new") do
+  id = session[:id].to_i
   title = params[:title]
   content = params[:content]
-  id = session[:id].to_i
 
   DB.execute("INSERT INTO posts (title, content) VALUES (?, ?)",title, content)
   DB.execute("INSERT INTO relation (post, userid) VALUES (?, ?)",title, id)
@@ -47,8 +47,13 @@ post("/posts/delete") do
 end
 
 get("/post") do
+  id = session[:id].to_i
 
-  slim :"/posts/post"
+  if id >= 1
+    slim :"/posts/new"
+  else
+    redirect '/home'
+  end
 end
 
 get("/home") do
@@ -82,11 +87,11 @@ get("/home") do
   @banned_mappers = DB.execute("SELECT mappername FROM relation WHERE userid = ?", id)
   @user = DB.execute("SELECT username FROM users WHERE id = ?", id)
   @posts = DB.execute("SELECT * FROM posts")
-  slim :home
+  slim :index
 end
 
 get("/register") do
-  slim :register
+  slim :"accounts/register"
 end
 
 post("/users/new") do
@@ -106,7 +111,7 @@ post("/users/new") do
 end
 
 get("/showlogin") do
-  slim :login
+  slim :"/accounts/login"
 end
 
 post("/login") do
@@ -122,7 +127,7 @@ post("/login") do
   
   if BCrypt::Password.new(pwdigest) == password
     session[:id] = id
-    redirect("/home")
+    redirect '/home'
     
   else
     "Incorrect Password"
@@ -139,7 +144,7 @@ get("/admin") do
     @userlist = DB.execute("SELECT username FROM users")
   end
 
-  slim :admin
+  slim :"accounts/admin"
 end
 
 post("/delete") do
