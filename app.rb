@@ -1,8 +1,8 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'sqlite3'
-require 'slim'
 require 'bcrypt'
+require 'slim'
 require 'time'
 require_relative 'datafetcher.rb'
 
@@ -10,7 +10,7 @@ enable :sessions
 
 DB = SQLite3::Database.new 'db/data.db'
 
-#FIX RESTFULL AND EDIT FUNCTIONALITY FOR POSTS
+#SEND TITLE VARIABLE TO /posts/update OR SO HELP ME GOD
 
 get("/") do
   redirect '/home'
@@ -27,13 +27,32 @@ post("/posts/new") do
   redirect '/home'
 end
 
-post("/posts/edit") do
+get("/posts/edit") do
+  id = session[:id].to_i
+  @title = params[:title]
+  postUser = DB.execute("SELECT userid FROM relation WHERE post = ?", @title)
+  postUser = postUser.to_s
+
+  if id != postUser[2..-3].to_i
+    redirect 'home'
+  else
+  end
+
+  slim :"posts/edit"
+end
+
+post("/posts/update") do
+  title = @title
   newtitle = params[:newtitle]
   newcontent = params[:newcontent]
   id = session[:id].to_i
 
-  DB.execute("UPDATE posts SET title = newtitle, content = newcontent WHERE ",newtitle, newcontent,title, content)
-  DB.execute("INSERT INTO relation (post, userid) VALUES (?, ?)",title, id)
+  p @title
+  p newtitle
+  p newcontent
+  p id
+
+  DB.execute("UPDATE posts SET title = '#{newtitle}', content = '#{newcontent}' WHERE title = ?", title)
 
   redirect '/home'
 end

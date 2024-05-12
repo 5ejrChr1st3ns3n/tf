@@ -43,7 +43,9 @@ html
             li
             h3 = post[0]
             p = post[1]
-            a href="/posts/edit"Edit post
+            form action="/posts/edit" method="get"
+              input type="hidden" name="title" value="#{post[0]}"
+              button type="submit" href="/posts/edit"Edit
             form action="/posts/delete" method="post" 
               input type="hidden" name="post" value="#{post[0]}"
               button type="submit"Delete

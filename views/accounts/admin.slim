@@ -7,6 +7,5 @@ html lang="en"
         tr
           td = username
           td
-            form action="/delete" method="post" 
-              input type="hidden" name="username" value="#{username}"
-              button type="submit"Delete
+            button type="button" onclick="alert('Edit Button Clicked for #{username}')" = "Edit #{username}"
+    

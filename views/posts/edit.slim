@@ -1,9 +1,12 @@
 h1 Edit Post
-form action="/posts/new" method="post"
+
+form action="/posts/update" method="post"
+  input type="hidden" name="title" value="#{post[0]}" 
+  
   label for="title" Title:
-  input type="text" name="title" id="title"
+  input type="text" name="newtitle" id="title"
   br
   label for="content" Content:
-  textarea name="content" id="content"
+  textarea name="newcontent" id="content"
   br
   button type="submit" Submit edit
