@@ -29,9 +29,13 @@ end
 
 get("/posts/edit") do
   id = session[:id].to_i
-  @title = params[:title]
-  postUser = DB.execute("SELECT userid FROM relation WHERE post = ?", @title)
+  TITLE = params[:title]
+  postUser = DB.execute("SELECT userid FROM relation WHERE post = ?", TITLE)
   postUser = postUser.to_s
+
+  p postUser
+  p id
+  p TITLE
 
   if id != postUser[2..-3].to_i
     redirect 'home'
@@ -42,17 +46,16 @@ get("/posts/edit") do
 end
 
 post("/posts/update") do
-  title = @title
   newtitle = params[:newtitle]
   newcontent = params[:newcontent]
   id = session[:id].to_i
 
-  p @title
+  p TITLE
   p newtitle
   p newcontent
   p id
 
-  DB.execute("UPDATE posts SET title = '#{newtitle}', content = '#{newcontent}' WHERE title = ?", title)
+  DB.execute("UPDATE posts SET title = '#{newtitle}', content = '#{newcontent}' WHERE title = ?", TITLE)
 
   redirect '/home'
 end
